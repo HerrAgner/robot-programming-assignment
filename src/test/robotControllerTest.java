@@ -38,11 +38,13 @@ public class robotControllerTest {
                 {MOCK_ROOM + "\n" + MOCK_ROBOT + "\nD", false},
                 {"-3 5\n" + MOCK_ROBOT + "\n" + MOCK_NAV, false},
                 {"4 E\n" + MOCK_ROBOT + " \n" + MOCK_NAV, false},
+                {"4 4 2\n" + MOCK_ROBOT + " \n" + MOCK_NAV, false},
                 {MOCK_ROOM + "\nE 0 E\n" + MOCK_NAV, false},
                 {MOCK_ROOM + "\n-3 0 E\n" + MOCK_NAV, false},
                 {MOCK_ROOM + "\n0 -4 E\n" + MOCK_NAV, false},
                 {MOCK_ROOM + "\n0 0 Z\n" + MOCK_NAV, false},
-                {MOCK_ROOM + "\n0 0 E A F\n" + MOCK_NAV, false}
+                {MOCK_ROOM + "\n0 0 E A F\n" + MOCK_NAV, false},
+                {"0 0\n0 0 E\n" + MOCK_NAV, false}
 
         });
     }

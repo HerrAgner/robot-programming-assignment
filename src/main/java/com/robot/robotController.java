@@ -56,7 +56,7 @@ public class robotController {
 
         System.out.println("Type \"quit\" to exit.");
         while (!roomCheck) {
-            int[] values;
+            int[] values = null;
             System.out.println("\nSubmit room width and depth. Enter two numbers, separate values with a space.");
 
             // Adds input in array, separates input on whitespace characters
@@ -74,7 +74,6 @@ public class robotController {
                 values = convertInputToIntArray(lines);
             } else {
                 System.out.println("Incorrect number of values. Enter only two.");
-                continue;
             }
 
             // Validation and creation of the room with input values
@@ -96,7 +95,7 @@ public class robotController {
      */
     private boolean initializeRobot() {
         boolean robotCheck = false;
-        int[] values;
+        int[] values = null;
         Character direction = null;
 
         if (!this.running) {
@@ -127,7 +126,6 @@ public class robotController {
                 values = convertInputToIntArray(lines);
             } else {
                 System.out.println("Incorrect number of values.");
-                continue;
             }
 
             // Last input is compared against the Direction-enum. If it exists as a shortCode there, return true.
@@ -135,11 +133,10 @@ public class robotController {
                 direction = lines[2].charAt(0);
             } else {
                 System.out.println("Incorrect direction. Try one of the following: N, E, S or W.");
-                continue;
             }
 
             // Validation and creation of the robot with input values
-            if (values != null && isValidPosition(values)) {
+            if (values != null && direction != null && isValidPosition(values)) {
                 robot = new Robot(values[0], values[1], Direction.getDirectionFromChar(direction));
                 robotCheck = true;
             } else if (testMode) {
