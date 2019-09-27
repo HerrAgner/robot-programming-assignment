@@ -18,6 +18,10 @@ public class GameTest {
     private Boolean expectedResult;
     private Game game;
 
+    private final static String MOCK_BOARD = "5 5";
+    private final static String MOCK_ROBOT = "1 1 E";
+    private final static String MOCK_NAV = "FRL";
+
     public GameTest(String input, Boolean expectedResult) {
         this.input = input;
         this.expectedResult = expectedResult;
@@ -31,18 +35,20 @@ public class GameTest {
                 {"5 5\n0 0 E\nRFLFFLRF", true},
                 {"20 20\n2 3 W\nRLRLRL", true},
                 {"        50 50  \n  25     25  S\n   F", true},
-                {"1 1\n0 0 W\nD", false},
-                {"-3 5\n0 0 E\nR", false},
-                {"4 E\n0 0 E\nL", false},
-                {"5 5\nE 0 E\nR", false},
-                {"5 5\n-3 0 E\nR", false},
-                {"5 5\n0 -4 E\nR", false},
-                {"5 5\n0 0 Z\nR", false},
-                {"5 5\n0 0 E A F\nR", false}
+                {MOCK_BOARD + "\n" + MOCK_ROBOT + "\nD", false},
+                {"-3 5\n" + MOCK_ROBOT + "\n" + MOCK_NAV, false},
+                {"4 E\n" + MOCK_ROBOT + " \n" + MOCK_NAV, false},
+                {MOCK_BOARD + "\nE 0 E\n" + MOCK_NAV, false},
+                {MOCK_BOARD + "\n-3 0 E\n" + MOCK_NAV, false},
+                {MOCK_BOARD + "\n0 -4 E\n" + MOCK_NAV, false},
+                {MOCK_BOARD + "\n0 0 Z\n" + MOCK_NAV, false},
+                {MOCK_BOARD + "\n0 0 E A F\n" + MOCK_NAV, false}
 
         });
     }
 
+    // Test will run with different parameters every time.
+    // One time for each object in inputCommands-array
     @Test
     public void testGameWithParameters() {
         InputStream in = new ByteArrayInputStream(input.getBytes());
