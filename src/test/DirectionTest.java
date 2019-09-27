@@ -5,7 +5,7 @@ import org.junit.Test;
 
 public class DirectionTest {
     private Direction direction = Direction.NORTH;
-
+//
     @Test
     public void rotateToAllDirections() {
         direction = direction.rotate(Command.RIGHT);
