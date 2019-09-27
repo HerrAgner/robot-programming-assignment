@@ -1,4 +1,4 @@
-package com.robot.objects;
+package main.java.com.robot.objects;
 
 public class Board {
 

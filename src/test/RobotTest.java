@@ -1,6 +1,6 @@
-import com.robot.instructions.Command;
-import com.robot.instructions.Direction;
-import com.robot.objects.Robot;
+import main.java.com.robot.instructions.Command;
+import main.java.com.robot.instructions.Direction;
+import main.java.com.robot.objects.Robot;
 import org.junit.Assert;
 import org.junit.Test;
 

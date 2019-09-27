@@ -1,7 +1,7 @@
-package com.robot.objects;
+package main.java.com.robot.objects;
 
-import com.robot.instructions.Command;
-import com.robot.instructions.Direction;
+import main.java.com.robot.instructions.Command;
+import main.java.com.robot.instructions.Direction;
 
 public class Robot {
 

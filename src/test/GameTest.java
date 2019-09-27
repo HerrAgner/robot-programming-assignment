@@ -5,7 +5,7 @@ import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.Collection;
 
-import com.robot.Game;
+import main.java.com.robot.Game;
 import org.junit.Assert;
 import org.junit.Test;
 

@@ -1,4 +1,4 @@
-package com.robot;
+package main.java.com.robot;
 
 public class Main {
 

@@ -1,9 +1,9 @@
-package com.robot;
+package main.java.com.robot;
 
-import com.robot.instructions.Command;
-import com.robot.instructions.Direction;
-import com.robot.objects.Board;
-import com.robot.objects.Robot;
+import main.java.com.robot.instructions.Command;
+import main.java.com.robot.instructions.Direction;
+import main.java.com.robot.objects.Board;
+import main.java.com.robot.objects.Robot;
 
 import java.io.BufferedReader;
 import java.io.IOException;
