@@ -3,7 +3,7 @@ package main.java.com.robot;
 public class Main {
 
     public static void main(String[] args) {
-        Game game = new Game();
-        game.run();
+        robotController robotController = new robotController();
+        robotController.run();
     }
 }

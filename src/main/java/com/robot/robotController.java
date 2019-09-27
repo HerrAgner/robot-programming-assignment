@@ -2,7 +2,7 @@ package main.java.com.robot;
 
 import main.java.com.robot.instructions.Command;
 import main.java.com.robot.instructions.Direction;
-import main.java.com.robot.objects.Board;
+import main.java.com.robot.objects.Room;
 import main.java.com.robot.objects.Robot;
 
 import java.io.BufferedReader;
@@ -10,15 +10,15 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 
-public class Game {
+public class robotController {
 
-    private Board board;
+    private Room room;
     private Robot robot;
     private BufferedReader br;
     private boolean running = true;
     private boolean testMode = false;
 
-    public Game() {
+    public robotController() {
         this.br = new BufferedReader(new InputStreamReader(System.in));
     }
 
@@ -28,14 +28,14 @@ public class Game {
      *
      * @param br Buffered reader with custom in-stream for testing purposes.
      */
-    public Game(BufferedReader br) {
+    public robotController(BufferedReader br) {
         this.br = br;
         this.testMode = true;
-        this.board = new Board(5, 5);
+        this.room = new Room(5, 5);
     }
 
     public boolean run() {
-        running = initializeBoard();
+        running = initializeRoom();
         running = initializeRobot();
         running = controlRobot();
 
@@ -43,21 +43,21 @@ public class Game {
     }
 
     /**
-     * Initialized the board size with width and height.
+     * Initialized the room size with width and depth.
      *
      * @return false when you type "quit", otherwise loops until correct values are entered.
      */
-    private boolean initializeBoard() {
-        boolean boardCheck = false;
+    private boolean initializeRoom() {
+        boolean roomCheck = false;
 
         if (!this.running) {
             return false;
         }
 
         System.out.println("Type \"quit\" to exit.");
-        while (!boardCheck) {
-            int[] values = null;
-            System.out.println("Submit board width and height. Enter two numbers, separate values with a space");
+        while (!roomCheck) {
+            int[] values;
+            System.out.println("\nSubmit room width and depth. Enter two numbers, separate values with a space.");
 
             // Adds input in array, separates input on whitespace characters
             String[] lines = new String[0];
@@ -70,19 +70,19 @@ public class Game {
             // Exit condition
             if (lines[0].equals("quit")) return false;
 
-            //  Input lines are checked if they contain only numbers, then parsed to int and added to an array.
-            if (lines.length == 2 && (lines[0].matches("\\d+") && lines[1].matches("\\d+"))) {
-                values = Arrays.stream(lines).mapToInt(Integer::parseInt).toArray();
+            if (lines.length == 2) {
+                values = convertInputToIntArray(lines);
             } else {
-                System.out.println("Input was not positive numbers.");
+                System.out.println("Incorrect number of values. Enter only two.");
+                continue;
             }
 
-            // Validation and creation of the board with input values
-            if (nullAndValueCheck(values)) {
-                board = new Board(values[0], values[1]);
-                boardCheck = true;
+            // Validation and creation of the room with input values
+            if (values != null && roomSizeCheck(values[0], values[1])) {
+                room = new Room(values[0], values[1]);
+                roomCheck = true;
             } else {
-                System.out.println("Incorrect input. Enter two numbers.\n");
+                System.out.println("Incorrect input. Enter two numbers.");
                 if (testMode) return false;
             }
         }
@@ -96,7 +96,7 @@ public class Game {
      */
     private boolean initializeRobot() {
         boolean robotCheck = false;
-        int[] values = null;
+        int[] values;
         Character direction = null;
 
         if (!this.running) {
@@ -120,29 +120,25 @@ public class Game {
             // Exit condition
             if (lines[0].equals("quit")) return false;
 
-            /*
-            Checks for exactly 3 inputs.
-            First two are checked if they contain only numbers, then parsed to int and added to an array.
-            Last input is compared against the Direction-enum. If it exists as a shortCode there, return true.
-             */
+
+            // Checks for exactly 3 inputs.
+            // First two are checked if they contain only integers.
             if (lines.length == 3) {
-                if (lines[0].matches("\\d+") && lines[1].matches("\\d+")) {
-                    int[] tempValues = {Integer.parseInt(lines[0]), Integer.parseInt(lines[1])};
-                    values = Arrays.stream(tempValues).toArray();
-                } else {
-                    System.out.println("Input was not positive numbers.");
-                }
-                if (Direction.getDirectionFromChar(lines[2].charAt(0)) != null) {
-                    direction = lines[2].charAt(0);
-                } else {
-                    System.out.println("Incorrect direction. Try one of the following: N, E, S or W.");
-                }
+                values = convertInputToIntArray(lines);
             } else {
                 System.out.println("Incorrect number of values.");
+                continue;
+            }
+
+            // Last input is compared against the Direction-enum. If it exists as a shortCode there, return true.
+            if (Direction.getDirectionFromChar(lines[2].charAt(0)) != null) {
+                direction = lines[2].charAt(0);
+            } else {
+                System.out.println("Incorrect direction. Try one of the following: N, E, S or W.");
             }
 
             // Validation and creation of the robot with input values
-            if (nullAndValueCheck(values) && directionCheck(direction) && isValidMove(values)) {
+            if (values != null && direction != null && isValidPosition(values)) {
                 robot = new Robot(values[0], values[1], Direction.getDirectionFromChar(direction));
                 robotCheck = true;
             } else if (testMode) {
@@ -191,10 +187,10 @@ public class Game {
                     // Validates new position, then either moves the robot or print out a crash with x,y and direction
                     case FORWARD:
                         int[] newPosition = robot.getNewPosition();
-                        if (isValidMove(newPosition)) {
+                        if (isValidPosition(newPosition)) {
                             robot.moveToPosition(newPosition);
                         } else {
-                            System.out.printf("crash facing %s at x: %d, y: %d\n",
+                            System.out.printf("Collision facing %s at x: %d, y: %d\n",
                                     robot.getDirection(),
                                     robot.getPosX(),
                                     robot.getPosY());
@@ -215,32 +211,52 @@ public class Game {
     }
 
     /**
-     * Null and length validation for values
+     * Validates so that no sides of the room is 0
      *
-     * @param values Position values. Need exactly two.
-     * @return true if values aren't null and at the right length
+     * @param width width of the room
+     * @param depth depth of the room
+     * @return true if values are bigger than 0
      */
-    private boolean nullAndValueCheck(int[] values) {
-        return values != null && values.length == 2;
+    private boolean roomSizeCheck(int width, int depth) {
+        if (width > 0 && depth > 0) {
+            System.out.println("Room must be wider and deeper than 0.");
+            return false;
+        }
+        return true;
     }
 
     /**
-     * Null validation for direction
-     *
-     * @param direction char for direction
-     * @return true if direction is not null
-     */
-    private boolean directionCheck(Character direction) {
-        return direction != null;
-    }
-
-    /**
-     * Returns true if x and y is greater than 0 and less than board length and height
+     * Returns true if x and y is greater than 0 and less than the room width and depth.
      *
      * @param position new position coordinates
-     * @return true if position is in bounds of the game board.
+     * @return true if position is in bounds of the room.
      */
-    private boolean isValidMove(int[] position) {
-        return position[0] < board.getWidth() && position[0] >= 0 && position[1] < board.getHeight() && position[1] >= 0;
+    private boolean isValidPosition(int[] position) {
+        if (position[0] < room.getWidth() && position[0] >= 0 && position[1] < room.getDepth() && position[1] >= 0)
+            return true;
+        else {
+            System.out.println("Invalid position.");
+            return false;
+        }
+    }
+
+    /**
+     * Input lines are checked if they contain only valid integers, then parsed to int and added to an array.
+     *
+     * @param input String array with two values
+     * @return Array with two integers
+     */
+    private int[] convertInputToIntArray(String[] input) {
+        int[] values = null;
+        if (input[0].matches("\\d+") && input[1].matches("\\d+")) {
+            try {
+                values = Arrays.stream(input).mapToInt(Integer::parseInt).toArray();
+            } catch (NumberFormatException e) {
+                System.out.println("Input is too long.");
+            }
+        } else {
+            System.out.println("Input was not valid positive integers.");
+        }
+        return values;
     }
 }
