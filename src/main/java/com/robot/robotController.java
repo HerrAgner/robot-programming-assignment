@@ -131,14 +131,15 @@ public class robotController {
             }
 
             // Last input is compared against the Direction-enum. If it exists as a shortCode there, return true.
-            if (Direction.getDirectionFromChar(lines[2].charAt(0)) != null) {
+            if (lines[2].length() == 1 && Direction.getDirectionFromChar(lines[2].charAt(0)) != null) {
                 direction = lines[2].charAt(0);
             } else {
                 System.out.println("Incorrect direction. Try one of the following: N, E, S or W.");
+                continue;
             }
 
             // Validation and creation of the robot with input values
-            if (values != null && direction != null && isValidPosition(values)) {
+            if (values != null && isValidPosition(values)) {
                 robot = new Robot(values[0], values[1], Direction.getDirectionFromChar(direction));
                 robotCheck = true;
             } else if (testMode) {
@@ -167,7 +168,10 @@ public class robotController {
         // Adds each character of the input as a value in an array
         char[] commands = new char[0];
         try {
-            commands = this.br.readLine().trim().toCharArray();
+            String input = this.br.readLine().trim();
+            // Exit condition
+            if (input.equals("quit")) return false;
+            commands = input.toCharArray();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -219,10 +223,11 @@ public class robotController {
      */
     private boolean roomSizeCheck(int width, int depth) {
         if (width > 0 && depth > 0) {
+            return true;
+        } else {
             System.out.println("Room must be wider and deeper than 0.");
             return false;
         }
-        return true;
     }
 
     /**
@@ -250,7 +255,7 @@ public class robotController {
         int[] values = null;
         if (input[0].matches("\\d+") && input[1].matches("\\d+")) {
             try {
-                values = Arrays.stream(input).mapToInt(Integer::parseInt).toArray();
+                values = Arrays.stream(input).filter(s -> s.matches("\\d+")).mapToInt(Integer::parseInt).toArray();
             } catch (NumberFormatException e) {
                 System.out.println("Input is too long.");
             }
