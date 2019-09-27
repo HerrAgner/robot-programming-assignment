@@ -10,5 +10,7 @@ public class CommandTest {
         Assert.assertSame(Command.RIGHT, Command.getCommandFromChar('R'));
         Assert.assertSame(Command.LEFT, Command.getCommandFromChar('L'));
         Assert.assertNotSame(Command.FORWARD, Command.getCommandFromChar('L'));
+        Assert.assertNull(Command.getCommandFromChar('K'));
+        Assert.assertNull(Command.getCommandFromChar('4'));
     }
 }
