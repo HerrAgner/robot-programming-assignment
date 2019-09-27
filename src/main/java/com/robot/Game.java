@@ -22,15 +22,11 @@ public class Game {
         this.br = new BufferedReader(new InputStreamReader(System.in));
     }
 
-    public Game(Board board) {
-        this.br = new BufferedReader(new InputStreamReader(System.in));
-        this.board = board;
-    }
-
     /**
      * Only used for testing. Exit condition after validation in methods.
+     * And custom in-stream for testing values.
      *
-     * @param br Buffered reader with custom instream for testing purposes.
+     * @param br Buffered reader with custom in-stream for testing purposes.
      */
     public Game(BufferedReader br) {
         this.br = br;

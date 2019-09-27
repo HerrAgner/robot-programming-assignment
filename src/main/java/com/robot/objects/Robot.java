@@ -81,12 +81,11 @@ public class Robot {
      *
      * @param coordinates  Need exactly two int values
      */
-    public boolean moveToPosition(int[] coordinates) {
-        if (coordinates.length != 2) return false;
+    public void moveToPosition(int[] coordinates) {
+        if (coordinates.length != 2) return;
 
         setPosX(coordinates[0]);
         setPosY(coordinates[1]);
-        return true;
     }
 
     /**
