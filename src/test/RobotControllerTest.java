@@ -5,7 +5,7 @@ import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.Collection;
 
-import main.java.com.robot.robotController;
+import main.java.com.robot.RobotController;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -13,16 +13,16 @@ import org.junit.runners.Parameterized;
 import org.junit.runner.RunWith;
 
 @RunWith(Parameterized.class)
-public class robotControllerTest {
+public class RobotControllerTest {
     private String input;
     private Boolean expectedResult;
-    private robotController robotController;
+    private RobotController robotController;
 
     private final static String MOCK_ROOM = "5 5";
     private final static String MOCK_ROBOT = "1 1 E";
     private final static String MOCK_NAV = "FRL";
 
-    public robotControllerTest(String input, Boolean expectedResult) {
+    public RobotControllerTest(String input, Boolean expectedResult) {
         this.input = input;
         this.expectedResult = expectedResult;
     }
@@ -56,7 +56,7 @@ public class robotControllerTest {
         InputStream in = new ByteArrayInputStream(input.getBytes());
         System.setIn(in);
         BufferedReader br = new BufferedReader(new InputStreamReader(in));
-        robotController = new robotController(br);
+        robotController = new RobotController(br);
         System.out.printf("Parameterized inputs are : \n%s\n", input);
         Assert.assertEquals(expectedResult, robotController.run());
     }

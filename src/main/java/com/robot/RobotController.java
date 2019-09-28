@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 
-public class robotController {
+public class RobotController {
 
     private Room room;
     private Robot robot;
@@ -18,7 +18,7 @@ public class robotController {
     private boolean running = true;
     private boolean testMode = false;
 
-    public robotController() {
+    public RobotController() {
         this.br = new BufferedReader(new InputStreamReader(System.in));
     }
 
@@ -28,7 +28,7 @@ public class robotController {
      *
      * @param br Buffered reader with custom in-stream for testing purposes.
      */
-    public robotController(BufferedReader br) {
+    public RobotController(BufferedReader br) {
         this.br = br;
         this.testMode = true;
         this.room = new Room(5, 5);
