@@ -1,4 +1,4 @@
-package main.java.com.robot.objects;
+package com.robot.objects;
 
 public class Room {
 

@@ -1,5 +1,5 @@
-import main.java.com.robot.instructions.Command;
-import main.java.com.robot.instructions.Direction;
+import com.robot.instructions.Command;
+import com.robot.instructions.Direction;
 import org.junit.Assert;
 import org.junit.Test;
 

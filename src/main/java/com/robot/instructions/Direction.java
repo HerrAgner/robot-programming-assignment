@@ -1,4 +1,4 @@
-package main.java.com.robot.instructions;
+package com.robot.instructions;
 
 import java.util.HashMap;
 import java.util.Map;

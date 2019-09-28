@@ -1,4 +1,4 @@
-import main.java.com.robot.instructions.Command;
+import com.robot.instructions.Command;
 import org.junit.Assert;
 import org.junit.Test;
 
