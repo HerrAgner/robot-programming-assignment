@@ -35,9 +35,9 @@ public class RobotController {
     }
 
     public boolean run() {
-        running = initializeRoom();
-        running = initializeRobot();
-        running = controlRobot();
+        this.running = initializeRoom();
+        this.running = initializeRobot();
+        this.running = controlRobot();
 
         return running;
     }
@@ -60,18 +60,13 @@ public class RobotController {
             System.out.println("\nSubmit room width and depth. Enter two numbers, separate values with a space.");
 
             // Adds input in array, separates input on whitespace characters
-            String[] lines = new String[0];
-            try {
-                lines = this.br.readLine().trim().split("\\s+");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            String[] lines = inputLines();
 
             // Exit condition
             if (lines[0].equals("quit")) return false;
 
             if (lines.length == 2) {
-                values = convertInputToIntArray(lines);
+                values = convertInputToIntArray(lines, 2);
             } else {
                 System.out.println("Incorrect number of values. Enter only two.");
             }
@@ -104,17 +99,12 @@ public class RobotController {
 
         // Repeats until everything is validated to true.
         while (!robotCheck) {
-            System.out.println("Submit robot starting position and direction. " +
+            System.out.println("\nSubmit robot starting position and direction. " +
                     "Enter two numbers and a direction (i.e. 5 5 N). " +
                     "Separate values with a space.");
 
             // Adds input in array, separates input on whitespace characters
-            String[] lines = new String[0];
-            try {
-                lines = this.br.readLine().trim().split("\\s+");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            String[] lines = inputLines();
 
             // Exit condition
             if (lines[0].equals("quit")) return false;
@@ -123,13 +113,14 @@ public class RobotController {
             // Checks for exactly 3 inputs.
             // First two are checked if they contain only integers.
             if (lines.length == 3) {
-                values = convertInputToIntArray(lines);
+                values = convertInputToIntArray(lines, 2);
             } else {
                 System.out.println("Incorrect number of values.");
+                lines = null;
             }
 
             // Last input is compared against the Direction-enum. If it exists as a shortCode there, return true.
-            if (lines[2].length() == 1 && Direction.getDirectionFromChar(lines[2].charAt(0)) != null) {
+            if (lines != null && lines[2].length() == 1 && Direction.getDirectionFromChar(lines[2].charAt(0)) != null) {
                 direction = lines[2].charAt(0);
             } else {
                 System.out.println("Incorrect direction. Try one of the following: N, E, S or W.");
@@ -157,7 +148,7 @@ public class RobotController {
             return false;
         }
         System.out.println(
-                "Give directions to the robot:\n" +
+                "\nGive directions to the robot:\n" +
                         "L = Turn left\n" +
                         "R = Turn right\n" +
                         "F = Walk forward\n");
@@ -171,6 +162,8 @@ public class RobotController {
             commands = input.toCharArray();
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (NullPointerException e) {
+            return false;
         }
 
         // Loops through the char-array and moves the robot based each character
@@ -212,6 +205,23 @@ public class RobotController {
     }
 
     /**
+     * Splits users input on whitespace and adds each part to an array
+     *
+     * @return String[] with each part of the user input, split on whitespace
+     */
+    private String[] inputLines() {
+        String[] lines = null;
+        try {
+            lines = this.br.readLine().trim().split("\\s+");
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NullPointerException e) {
+            lines = new String[]{"quit"};
+        }
+        return lines;
+    }
+
+    /**
      * Validates so that no sides of the room is 0
      *
      * @param width width of the room
@@ -237,7 +247,7 @@ public class RobotController {
         if (position[0] < room.getWidth() && position[0] >= 0 && position[1] < room.getDepth() && position[1] >= 0)
             return true;
         else {
-            System.out.println("Invalid position.");
+            System.out.println("Invalid position");
             return false;
         }
     }
@@ -248,16 +258,13 @@ public class RobotController {
      * @param input String array with two values
      * @return Array with two integers
      */
-    private int[] convertInputToIntArray(String[] input) {
-        int[] values = null;
-        if (input[0].matches("\\d+") && input[1].matches("\\d+")) {
-            try {
-                values = Arrays.stream(input).filter(s -> s.matches("\\d+")).mapToInt(Integer::parseInt).toArray();
-            } catch (NumberFormatException e) {
-                System.out.println("Input is too long.");
-            }
-        } else {
+    private int[] convertInputToIntArray(String[] input, int length) {
+        int[] values;
+        values = Arrays.stream(input).filter(s -> s.matches("[\\d+]{1,9}")).mapToInt(Integer::parseInt).toArray();
+
+        if (values.length != length) {
             System.out.println("Input was not valid positive integers.");
+            return null;
         }
         return values;
     }

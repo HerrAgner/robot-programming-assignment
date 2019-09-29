@@ -9,10 +9,16 @@ public class Robot {
     private int posY;
     private Direction direction;
 
+    public Robot() {
+        this.posX = 0;
+        this.posY = 0;
+        this.direction = Direction.NORTH;
+    }
+
     public Robot(int startX, int startY, Direction startDirection) {
-        posX = startX;
-        posY = startY;
-        direction = startDirection;
+        this.posX = startX;
+        this.posY = startY;
+        this.direction = startDirection;
     }
 
     public int getPosX() {
