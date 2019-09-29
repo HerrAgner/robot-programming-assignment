@@ -29,6 +29,7 @@ public enum Direction {
 
     /**
      * Returns enum based on char
+     *
      * @param code Char N, E, S or W is valid characters
      * @return Enum command based on character
      */
@@ -38,6 +39,7 @@ public enum Direction {
 
     /**
      * Calculates the new direction based on Command LEFT or RIGHT
+     *
      * @param turn Command.LEFT or Command.RIGHT
      * @return Direction based on rotation
      */

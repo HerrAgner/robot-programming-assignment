@@ -18,5 +18,4 @@ public class Room {
         return depth;
     }
 
-
 }

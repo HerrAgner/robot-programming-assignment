@@ -85,7 +85,7 @@ public class Robot {
     /**
      * Moves the robot specified location.
      *
-     * @param coordinates  Need exactly two int values
+     * @param coordinates Need exactly two int values
      */
     public void moveToPosition(int[] coordinates) {
         if (coordinates.length != 2) return;
@@ -96,6 +96,7 @@ public class Robot {
 
     /**
      * Reports the robots location and direction
+     *
      * @return String with info about position and direction
      */
     public String report() {

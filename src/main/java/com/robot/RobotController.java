@@ -4,11 +4,12 @@ import com.robot.instructions.Command;
 import com.robot.instructions.Direction;
 import com.robot.objects.Room;
 import com.robot.objects.Robot;
+import com.robot.utilities.InputHelper;
+import com.robot.utilities.ValidationHelper;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 
 public class RobotController {
 
@@ -50,9 +51,7 @@ public class RobotController {
     private boolean initializeRoom() {
         boolean roomCheck = false;
 
-        if (!this.running) {
-            return false;
-        }
+        if (!this.running) return false;
 
         System.out.println("Type \"quit\" to exit.");
         while (!roomCheck) {
@@ -60,24 +59,24 @@ public class RobotController {
             System.out.println("\nSubmit room width and depth. Enter two numbers, separate values with a space.");
 
             // Adds input in array, separates input on whitespace characters
-            String[] lines = inputLines();
+            String[] lines = InputHelper.inputLines(this.br);
 
             // Exit condition
             if (lines[0].equals("quit")) return false;
 
             if (lines.length == 2) {
-                values = convertInputToIntArray(lines, 2);
+                values = InputHelper.convertInputToIntArray(lines, 2);
             } else {
                 System.out.println("Incorrect number of values. Enter only two.");
             }
 
             // Validation and creation of the room with input values
-            if (values != null && roomSizeCheck(values[0], values[1])) {
+            if (values != null && ValidationHelper.roomSizeCheck(values[0], values[1])) {
                 room = new Room(values[0], values[1]);
                 roomCheck = true;
             } else {
                 System.out.println("Incorrect input. Enter two numbers.");
-                if (testMode) return false;
+                if (this.testMode) return false;
             }
         }
         return true;
@@ -93,9 +92,7 @@ public class RobotController {
         int[] values = null;
         Character direction = null;
 
-        if (!this.running) {
-            return false;
-        }
+        if (!this.running) return false;
 
         // Repeats until everything is validated to true.
         while (!robotCheck) {
@@ -104,16 +101,16 @@ public class RobotController {
                     "Separate values with a space.");
 
             // Adds input in array, separates input on whitespace characters
-            String[] lines = inputLines();
+            String[] lines = InputHelper.inputLines(this.br);
 
             // Exit condition
             if (lines[0].equals("quit")) return false;
 
 
             // Checks for exactly 3 inputs.
-            // First two are checked if they contain only integers.
+            // First two are parsed to integers.
             if (lines.length == 3) {
-                values = convertInputToIntArray(lines, 2);
+                values = InputHelper.convertInputToIntArray(lines, 2);
             } else {
                 System.out.println("Incorrect number of values.");
                 lines = null;
@@ -127,10 +124,10 @@ public class RobotController {
             }
 
             // Validation and creation of the robot with input values
-            if (values != null && direction != null && isValidPosition(values)) {
+            if (values != null && direction != null && ValidationHelper.isValidPosition(values, this.room)) {
                 robot = new Robot(values[0], values[1], Direction.getDirectionFromChar(direction));
                 robotCheck = true;
-            } else if (testMode) {
+            } else if (this.testMode) {
                 return false;
             }
         }
@@ -144,9 +141,8 @@ public class RobotController {
      * F = Walk forward
      */
     private boolean controlRobot() {
-        if (!this.running) {
-            return false;
-        }
+        if (!this.running) return false;
+
         System.out.println(
                 "\nGive directions to the robot:\n" +
                         "L = Turn left\n" +
@@ -181,7 +177,7 @@ public class RobotController {
                     // Validates new position, then either moves the robot or print out a crash with x,y and direction
                     case FORWARD:
                         int[] newPosition = robot.getNewPosition();
-                        if (isValidPosition(newPosition)) {
+                        if (ValidationHelper.isValidPosition(newPosition, this.room)) {
                             robot.moveToPosition(newPosition);
                         } else {
                             System.out.printf("Collision facing %s at x: %d, y: %d\n",
@@ -195,77 +191,12 @@ public class RobotController {
                         throw new IllegalStateException("Unexpected value: " + inputChar);
                 }
             } else {
-                System.out.printf("Invalid input \'%s\'", inputChar);
-                return false;
+                System.out.printf("Invalid input \'%s\'\n", inputChar);
+                if (this.testMode) return false;
             }
         }
         // Prints out the robots final location after the command loop
         System.out.println(robot.report());
         return true;
-    }
-
-    /**
-     * Splits users input on whitespace and adds each part to an array
-     *
-     * @return String[] with each part of the user input, split on whitespace
-     */
-    private String[] inputLines() {
-        String[] lines = null;
-        try {
-            lines = this.br.readLine().trim().split("\\s+");
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (NullPointerException e) {
-            lines = new String[]{"quit"};
-        }
-        return lines;
-    }
-
-    /**
-     * Validates so that no sides of the room is 0
-     *
-     * @param width width of the room
-     * @param depth depth of the room
-     * @return true if values are bigger than 0
-     */
-    private boolean roomSizeCheck(int width, int depth) {
-        if (width > 0 && depth > 0) {
-            return true;
-        } else {
-            System.out.println("Room must be wider and deeper than 0.");
-            return false;
-        }
-    }
-
-    /**
-     * Returns true if x and y is greater than 0 and less than the room width and depth.
-     *
-     * @param position new position coordinates
-     * @return true if position is in bounds of the room.
-     */
-    private boolean isValidPosition(int[] position) {
-        if (position[0] < room.getWidth() && position[0] >= 0 && position[1] < room.getDepth() && position[1] >= 0)
-            return true;
-        else {
-            System.out.println("Invalid position");
-            return false;
-        }
-    }
-
-    /**
-     * Input lines are checked if they contain only valid integers, then parsed to int and added to an array.
-     *
-     * @param input String array with two values
-     * @return Array with two integers
-     */
-    private int[] convertInputToIntArray(String[] input, int length) {
-        int[] values;
-        values = Arrays.stream(input).filter(s -> s.matches("[\\d+]{1,9}")).mapToInt(Integer::parseInt).toArray();
-
-        if (values.length != length) {
-            System.out.println("Input was not valid positive integers.");
-            return null;
-        }
-        return values;
     }
 }

@@ -24,6 +24,7 @@ public enum Command {
 
     /**
      * Returns enum based on char
+     *
      * @param code Char F, L or R is valid characters
      * @return Enum command based on character
      */

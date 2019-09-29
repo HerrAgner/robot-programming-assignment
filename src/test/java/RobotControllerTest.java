@@ -46,7 +46,7 @@ public class RobotControllerTest {
                 {MOCK_ROOM + "\n0 0 E A F\n" + MOCK_NAV, false},
                 {"0 0\n0 0 E\n" + MOCK_NAV, false},
                 {"", false},
-                {MOCK_ROOM +"\n"+MOCK_ROBOT+"\n"+"", false}
+                {MOCK_ROOM + "\n" + MOCK_ROBOT + "\n" + "", false}
 
         });
     }

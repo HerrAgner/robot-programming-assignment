@@ -6,7 +6,7 @@ import org.junit.Test;
 
 public class RobotTest {
 
-    private Robot robot = new Robot(1,1, Direction.EAST);
+    private Robot robot = new Robot(1, 1, Direction.EAST);
     private int[] newPosition;
 
     @Test
